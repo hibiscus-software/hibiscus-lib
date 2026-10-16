@@ -160,6 +160,11 @@ public class WidgetGalleryScreen extends BaseScreen {
         }
         list.onSelect(name -> selectedPlayer = name);
         list.onActivate(name -> status = Component.translatable(KEY + "status.activated", name));
+        list.onContextMenu((name, x, menuY) -> openPopup(ContextMenu.builder()
+                .add(Component.translatable(KEY + "menu.message", name), () -> status = Component.translatable(KEY + "status.activated", name))
+                .separator()
+                .addDanger(t("menu.kick"), Icon.NONE, () -> status = t("menu.kick"))
+                .build(x, menuY)));
         y += list.getHeight() + 6;
         ListWidget<String> empty = content.add(new ListWidget<>(0, 0, width, 40,
                 ListWidget.RowRenderer.<String>of(name -> Icon.NONE, Component::literal, name -> null)), 0, y);

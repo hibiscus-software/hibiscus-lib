@@ -6,6 +6,9 @@ modId="${mod_id}"
 version="${mod_version}"
 displayName="${mod_name}"
 authors="Hibiscus Software"
+# Square icon beside the name in the mod list; wide banner at the top of the info panel. Both are pixel art, so no blur.
+iconFile="hibiscuslib_icon.png"
+bannerFile="hibiscuslib_banner.png"
 displayURL="https://github.com/hibiscus-software/hibiscus-lib"
 description='''
 The shared library for Hibiscus mods: the inventory button bar, a themeable GUI toolkit, config and networking helpers, and the Teams API.

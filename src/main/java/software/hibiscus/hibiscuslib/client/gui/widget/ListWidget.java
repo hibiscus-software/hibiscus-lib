@@ -23,6 +23,7 @@ import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import software.hibiscus.hibiscuslib.client.gui.HibiscusTheme;
@@ -31,10 +32,13 @@ import software.hibiscus.hibiscuslib.client.gui.Icon;
 /**
  * A scrolling list of selectable rows, each with an icon and two lines of text (a title and a muted subtitle). Click or
  * the arrow keys select; a double click or Enter activates. Rows come from a {@link RowRenderer} so any type can be
- * listed (players, teams, quests).
+ * listed (players, teams, quests). With {@link #onContextMenu(ContextMenuHandler)}, a right click on a row (or Shift+F10
+ * or the Menu key on the selected row) selects it and asks for its context menu.
  */
 public class ListWidget<T> extends AbstractScrollArea {
     public static final int ROW_HEIGHT = 22;
+    // GLFW_KEY_MENU (InputConstants has no name for it).
+    private static final int KEY_MENU = 348;
 
     // How a value shows as a row.
     public record RowRenderer<T>(Function<T, Icon> icon, Function<T, Component> title, Function<T, @Nullable Component> subtitle) {
@@ -43,11 +47,18 @@ public class ListWidget<T> extends AbstractScrollArea {
         }
     }
 
+    // Opens a row's context menu at a screen position (usually a ContextMenu built there).
+    @FunctionalInterface
+    public interface ContextMenuHandler<T> {
+        void open(T row, int x, int y);
+    }
+
     private final RowRenderer<T> renderer;
     private final List<T> rows = new ArrayList<>();
     private @Nullable T selected;
     private Consumer<@Nullable T> onSelect = value -> {};
     private Consumer<T> onActivate = value -> {};
+    private @Nullable ContextMenuHandler<T> onContextMenu;
     private Component emptyText = Component.empty();
     private boolean dragging;
 
@@ -63,6 +74,12 @@ public class ListWidget<T> extends AbstractScrollArea {
 
     public ListWidget<T> onActivate(Consumer<T> onActivate) {
         this.onActivate = onActivate;
+        return this;
+    }
+
+    // Right click on a row, or Shift+F10 / the Menu key on the selected one: selects the row and opens its menu.
+    public ListWidget<T> onContextMenu(ContextMenuHandler<T> onContextMenu) {
+        this.onContextMenu = onContextMenu;
         return this;
     }
 
@@ -178,8 +195,24 @@ public class ListWidget<T> extends AbstractScrollArea {
         }
     }
 
+    // Right clicks count too once there's a context menu to open.
+    @Override
+    protected boolean isValidClickButton(MouseButtonInfo buttonInfo) {
+        return super.isValidClickButton(buttonInfo)
+                || onContextMenu != null && buttonInfo.button() == InputConstants.MOUSE_BUTTON_RIGHT;
+    }
+
     @Override
     public void onClick(MouseButtonEvent event, boolean doubleClick) {
+        if (event.button() == InputConstants.MOUSE_BUTTON_RIGHT) {
+            int index = rowAt(event.y());
+            if (onContextMenu != null && index >= 0 && !isOverScrollbar(event.x(), event.y())) {
+                T value = rows.get(index);
+                select(value);
+                onContextMenu.open(value, (int) event.x(), (int) event.y());
+            }
+            return;
+        }
         dragging = updateScrolling(event);
         if (dragging) {
             return;
@@ -206,6 +239,13 @@ public class ListWidget<T> extends AbstractScrollArea {
             return false;
         }
         int index = selected == null ? -1 : rows.indexOf(selected);
+        boolean menuKey = event.key() == KEY_MENU || event.key() == InputConstants.KEY_F10 && event.hasShiftDown();
+        if (menuKey && onContextMenu != null && selected != null) {
+            // Under the selected row, where the mouse would be.
+            int rowY = getY() + 1 + index * ROW_HEIGHT - (int) scrollAmount();
+            onContextMenu.open(selected, getX() + 25, Math.min(getBottom(), rowY + ROW_HEIGHT));
+            return true;
+        }
         switch (event.key()) {
             case InputConstants.KEY_DOWN -> select(rows.get(Math.min(rows.size() - 1, index + 1)));
             case InputConstants.KEY_UP -> select(rows.get(Math.max(0, index - 1)));

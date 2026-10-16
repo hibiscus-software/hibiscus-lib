@@ -24,6 +24,16 @@ date. How to cut a release is in [docs/RELEASING.md](docs/RELEASING.md).
 
 ## [Unreleased]
 
+Suggested version: **1.2.0** (a toolkit addition; the Teams API is unchanged).
+
+### Added
+
+- `ListWidget.onContextMenu((row, x, y) -> ...)`: a right click on a row, or Shift+F10 / the Menu key on the selected
+  row, selects it and asks for its context menu (for example a `ContextMenu` built at that position). Shown on the
+  widget gallery's Lists tab.
+- A mod list icon and banner: the hibiscus icon shows beside Hibiscus Lib in NeoForge's mod list, and the Hibiscus Lib
+  banner at the top of its info panel (`iconFile` / `bannerFile` in `neoforge.mods.toml`).
+
 ## [1.1.1] - 2026-10-16
 
 ### Fixed
