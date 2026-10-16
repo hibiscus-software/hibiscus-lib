@@ -1,0 +1,25 @@
+{
+  "key.category.hibiscuslib.hibiscus": "Hibiscus",
+
+  "screen.hibiscuslib.edit_buttons": "Edit Buttons",
+  "screen.hibiscuslib.edit_buttons.reset": "Reset",
+  "screen.hibiscuslib.edit_buttons.empty": "No Hibiscus buttons are installed.",
+
+  "hibiscuslib.configuration.title": "Hibiscus Lib Settings",
+  "hibiscuslib.configuration.section.hibiscuslib.client.toml": "Client Settings",
+  "hibiscuslib.configuration.section.hibiscuslib.client.toml.title": "Client Settings",
+  "hibiscuslib.configuration.buttons": "Inventory Buttons",
+  "hibiscuslib.configuration.buttons.tooltip": "The column of Hibiscus buttons next to the inventory.",
+  "hibiscuslib.configuration.enabled": "Show Buttons",
+  "hibiscuslib.configuration.enabled.tooltip": "Show the button bar in the survival and creative inventories.",
+  "hibiscuslib.configuration.location": "Location",
+  "hibiscuslib.configuration.location.tooltip": "Where the bar sits around the inventory.",
+  "hibiscuslib.configuration.hidden": "Hidden Buttons",
+  "hibiscuslib.configuration.hidden.tooltip": "Button ids not to show. Right-click a button in the inventory to edit these in game.",
+  "hibiscuslib.configuration.order": "Button Order",
+  "hibiscuslib.configuration.order.tooltip": "Button ids in the order to show them.",
+  "hibiscuslib.configuration.debug": "Debug",
+  "hibiscuslib.configuration.debug.tooltip": "Tools for mod and pack developers.",
+  "hibiscuslib.configuration.widgetGallery": "Widget Gallery Command",
+  "hibiscuslib.configuration.widgetGallery.tooltip": "Register /hibiscuslib widgets, which opens a gallery of every Hibiscus widget."
+}

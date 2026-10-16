@@ -1,0 +1,39 @@
+{
+  "colors": {
+    "panel": "#2B2D31",
+    "panel_highlight": "#3F4248",
+    "panel_shadow": "#18191C",
+    "recess": "#1E1F22",
+    "text": "#E6E6E6",
+    "text_muted": "#9A9DA3",
+    "text_disabled": "#5C5F66",
+    "accent": "#F2557A",
+    "accent_hover": "#FF7898",
+    "positive": "#4FC78A",
+    "warning": "#F2C14E",
+    "negative": "#E5484D",
+    "gold": "#E8B04B",
+    "tooltip_accent": "#F2557A",
+    "selection": "#59F2557A",
+    "hover": "#24FFFFFF",
+    "overlay": "#A0101114"
+  },
+  "sprites": {
+    "panel": "hibiscuslib:panel",
+    "inset": "hibiscuslib:inset",
+    "button": "hibiscuslib:button",
+    "button_hover": "hibiscuslib:button_hover",
+    "button_pressed": "hibiscuslib:button_pressed",
+    "button_disabled": "hibiscuslib:button_disabled",
+    "text_field": "hibiscuslib:text_field",
+    "text_field_focused": "hibiscuslib:text_field_focused",
+    "scrollbar_track": "hibiscuslib:scrollbar_track",
+    "scrollbar_thumb": "hibiscuslib:scrollbar_thumb",
+    "scrollbar_thumb_hover": "hibiscuslib:scrollbar_thumb_hover",
+    "tab": "hibiscuslib:tab",
+    "tab_selected": "hibiscuslib:tab_selected",
+    "sidebar_hover": "hibiscuslib:sidebar_hover",
+    "toggle_off": "hibiscuslib:toggle_off",
+    "toggle_on": "hibiscuslib:toggle_on"
+  }
+}

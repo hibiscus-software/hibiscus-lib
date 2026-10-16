@@ -1,0 +1,219 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'net.neoforged.gradle.userdev' version '7.1.39'
+}
+
+tasks.named('wrapper', Wrapper).configure {
+    distributionType = Wrapper.DistributionType.BIN
+}
+
+// Full version is <mod_version>+<minecraft_version>, e.g. 1.0.0+26.3 (SemVer build metadata).
+version = "${mod_version}+${minecraft_version}"
+group = mod_group_id
+
+// The public API (docs/API.md): the Teams API's interfaces, enums, events and accessors that other mods compile against.
+// It has its own source set so it cannot reference Hibiscus Lib internals; the mod jar includes its classes, and it is
+// also published on its own as hibiscuslib-api, versioned by HibiscusLibApi.API_VERSION plus the Minecraft version.
+sourceSets {
+    // Sources in src/api/java (the source set's default).
+    api {}
+    main {
+        compileClasspath += sourceSets.api.output
+        runtimeClasspath += sourceSets.api.output
+    }
+}
+
+def apiVersion = (file('src/api/java/software/hibiscus/hibiscuslib/api/HibiscusLibApi.java').getText('UTF-8') =~ /API_VERSION = "([^"]+)"/)[0][1]
+// The API uses Minecraft and NeoForge types, so each Minecraft version's branch builds its own jar of the same API
+// version: hibiscuslib-api-1.0.0+26.3.jar here.
+def apiArtifactVersion = "${apiVersion}+${minecraft_version}"
+
+sourceSets.main.resources {
+    srcDir('src/generated/resources')
+
+    exclude("**/*.bbmodel")
+    exclude("src/generated/**/.cache")
+}
+
+repositories {
+    // JEI
+    maven {
+        name = "BlameJared"
+        url = "https://maven.blamejared.com/"
+        content {
+            includeGroup "mezz.jei"
+            includeGroup "net.mezzdev.config"
+        }
+    }
+}
+
+base {
+    archivesName = mod_id
+}
+
+// Mojang ships Java 25 to end users in 26.3, so mods should target Java 25.
+java.toolchain.languageVersion = JavaLanguageVersion.of(25)
+
+runs {
+    configureEach {
+        systemProperty 'forge.logging.markers', 'REGISTRIES'
+        systemProperty 'forge.logging.console.level', 'debug'
+
+        workingDirectory project.layout.projectDirectory.dir('run').dir(name)
+
+        modSource project.sourceSets.main
+        modSource project.sourceSets.api
+    }
+
+    client {
+        systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+    }
+
+    server {
+        systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        argument '--nogui'
+    }
+
+    // Launches GameTestServer, runs every registered gametest, then exits.
+    gameTestServer {
+        systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+    }
+
+    clientData {
+        arguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+    }
+}
+
+// Dependencies added to 'localRuntime' are available in dev runs but are not published.
+configurations {
+    runtimeClasspath.extendsFrom localRuntime
+}
+
+dependencies {
+    implementation "net.neoforged:neoforge:${neo_version}"
+    apiCompileOnly "net.neoforged:neoforge:${neo_version}"
+
+    // Optional integration: compiled against, never required at runtime. The dev client runs with it.
+    // EMI has no 26.3 build to compile against yet, so its bridge goes through reflection (RecipeViewers).
+    compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
+    localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
+}
+
+tasks.withType(ProcessResources).configureEach {
+    var replaceProperties = [
+            minecraft_version      : minecraft_version,
+            minecraft_version_range: minecraft_version_range,
+            neo_version            : neo_version,
+            neo_version_range      : neo_version_range,
+            mod_id                 : mod_id,
+            mod_name               : mod_name,
+            mod_license            : mod_license,
+            mod_version            : project.version,
+    ]
+    inputs.properties replaceProperties
+
+    filesMatching(['META-INF/neoforge.mods.toml']) {
+        expand replaceProperties
+    }
+}
+
+// The API on its own, for other mods to compile against:
+// software.hibiscus.hibiscuslib:hibiscuslib-api:<HibiscusLibApi.API_VERSION>+<minecraft_version>, with sources and javadoc.
+def apiLicenseName = "LICENSE_${mod_id}"
+def apiJar = tasks.register('apiJar', Jar) {
+    archiveBaseName = "${mod_id}-api"
+    archiveVersion = apiArtifactVersion
+    from sourceSets.api.output
+    from('LICENSE') { rename { apiLicenseName } }
+}
+def apiSourcesJar = tasks.register('apiSourcesJar', Jar) {
+    archiveBaseName = "${mod_id}-api"
+    archiveVersion = apiArtifactVersion
+    archiveClassifier = 'sources'
+    from sourceSets.api.allJava
+}
+def apiJavadoc = tasks.register('apiJavadoc', Javadoc) {
+    source = sourceSets.api.allJava
+    classpath = sourceSets.api.compileClasspath
+    destinationDir = layout.buildDirectory.dir('docs/api-javadoc').get().asFile
+    title = "Hibiscus Lib API ${apiVersion}"
+    // Every API type and method must be documented: a missing or broken doc comment fails the build.
+    options.addBooleanOption('Xdoclint:all', true)
+    options.addBooleanOption('Werror', true)
+    options.encoding = 'UTF-8'
+}
+def apiJavadocJar = tasks.register('apiJavadocJar', Jar) {
+    archiveBaseName = "${mod_id}-api"
+    archiveVersion = apiArtifactVersion
+    archiveClassifier = 'javadoc'
+    from apiJavadoc
+}
+tasks.named('assemble') { dependsOn apiJar }
+tasks.named('check') { dependsOn apiJavadoc }
+
+// Sources for the mod jar too, so consumers (Hibiscus Teams, Hibiscus Quests) get them in their IDE.
+java {
+    withSourcesJar()
+}
+tasks.named('sourcesJar', Jar).configure {
+    from sourceSets.api.allJava
+}
+
+publishing {
+    publications {
+        // The mod: consumers that use the button bar, GUI toolkit or helpers compile against this one.
+        register('mavenJava', MavenPublication) {
+            artifactId = mod_id
+            from components.java
+            // Consumers have Minecraft and NeoForge already, so the POM lists no dependencies.
+            pom.withXml { asNode().dependencies*.replaceNode {} }
+        }
+        // Compile-only for consumers that only need the Teams API: no dependencies in its POM.
+        register('api', MavenPublication) {
+            groupId = mod_group_id
+            artifactId = "${mod_id}-api"
+            version = apiArtifactVersion
+            artifact apiJar
+            artifact apiSourcesJar
+            artifact apiJavadocJar
+        }
+    }
+    repositories {
+        // ./gradlew publishAllPublicationsToProjectRepository: a local file repo under repo/ (git-ignored).
+        maven {
+            name = 'project'
+            url = "file://${project.projectDir}/repo"
+        }
+        // release.yml publishes here with GITHUB_TOKEN; see docs/RELEASING.md and docs/DEPENDING.md.
+        maven {
+            name = 'GitHubPackages'
+            url = "https://maven.pkg.github.com/${github_repository}"
+            credentials {
+                username = providers.environmentVariable('GITHUB_ACTOR').orNull
+                password = providers.environmentVariable('GITHUB_TOKEN').orNull
+            }
+        }
+    }
+}
+
+// Ship the MIT license inside the mod jar.
+tasks.named('jar', Jar).configure {
+    def licenseName = "LICENSE_${mod_id}"
+    // The API's classes are part of the mod at runtime.
+    from sourceSets.api.output
+    from('LICENSE') {
+        rename { licenseName }
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+idea {
+    module {
+        downloadSources = true
+        downloadJavadoc = true
+    }
+}
