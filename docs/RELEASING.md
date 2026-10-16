@@ -55,10 +55,10 @@ Do this on the branch for the Minecraft version you're releasing.
 2. In `CHANGELOG.md`:
    - rename `## [Unreleased]` to `## [X.Y.Z] - YYYY-MM-DD` and delete its "Suggested version" line;
    - add a new, empty `## [Unreleased]` above it;
-   - at the bottom, point `[Unreleased]` at `https://github.com/hibiscus-software/hibiscuslib/compare/vX.Y.Z+MC...HEAD`,
-     and add `[X.Y.Z]: https://github.com/hibiscus-software/hibiscuslib/compare/vPREVIOUS...vX.Y.Z+MC`, where
+   - at the bottom, point `[Unreleased]` at `https://github.com/hibiscus-software/hibiscus-lib/compare/vX.Y.Z+MC...HEAD`,
+     and add `[X.Y.Z]: https://github.com/hibiscus-software/hibiscus-lib/compare/vPREVIOUS...vX.Y.Z+MC`, where
      `vPREVIOUS` is the previous tag on this branch (for the branch's first release,
-     `[X.Y.Z]: https://github.com/hibiscus-software/hibiscuslib/commits/vX.Y.Z+MC`).
+     `[X.Y.Z]: https://github.com/hibiscus-software/hibiscus-lib/commits/vX.Y.Z+MC`).
 3. Set `mod_version=X.Y.Z` in `gradle.properties`.
 4. Check it all before tagging:
 
@@ -87,7 +87,7 @@ A tag with a pre-release part (`v1.1.0-beta.1+26.3`, with `mod_version=1.1.0-bet
 
 The `Publish to GitHub Packages` step runs `./gradlew publishAllPublicationsToGitHubPackagesRepository` with the
 workflow's own `GITHUB_TOKEN` (the workflow has `packages: write`), so it needs no secret. It publishes to
-`https://maven.pkg.github.com/hibiscus-software/hibiscuslib`:
+`https://maven.pkg.github.com/hibiscus-software/hibiscus-lib`:
 
 - `software.hibiscus.hibiscuslib:hibiscuslib:X.Y.Z+MC` (with `-sources`)
 - `software.hibiscus.hibiscuslib:hibiscuslib-api:A.B.C+MC` (with `-sources` and `-javadoc`)
@@ -96,7 +96,7 @@ The POMs list no dependencies (consumers have Minecraft and NeoForge already) an
 
 For Hibiscus Teams' and Hibiscus Quests' workflows to download the packages with their own `GITHUB_TOKEN`, give those
 repositories read access once: the package's page → **Package settings** → **Manage Actions access** → add
-`hibiscusteams` and `hibiscusquests` with the Read role. Do it for both packages after the first release.
+`hibiscus-teams` and `hibiscus-quests` with the Read role. Do it for both packages after the first release.
 
 GitHub Packages never replaces a published version. If a release run fails after this step, publish the fix as a new
 version rather than moving the tag; if it failed before it, see below.
@@ -114,7 +114,7 @@ It needs:
   exists;
 - a CurseForge upload API token in the `CURSEFORGE_TOKEN` repository **secret**. Make the token at
   authors.curseforge.com (account settings, API tokens), then run
-  `gh secret set CURSEFORGE_TOKEN -R hibiscus-software/hibiscuslib` and paste it in. Don't commit it or put it
+  `gh secret set CURSEFORGE_TOKEN -R hibiscus-software/hibiscus-lib` and paste it in. Don't commit it or put it
   anywhere else.
 
 To check the metadata without uploading, run the script with `--dry-run` and the token in `CURSEFORGE_TOKEN` (the

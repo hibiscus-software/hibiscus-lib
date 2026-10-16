@@ -6,8 +6,8 @@ data per team whether or not a teams mod is installed.
 
 On its own it adds no blocks or items; install it when a Hibiscus mod asks for it.
 
-- **[Hibiscus Teams](https://github.com/hibiscus-software/hibiscusteams)**: player teams, built on the Teams API.
-- **[Hibiscus Quests](https://github.com/hibiscus-software/hibiscusquests)**: a quest book with progress per team.
+- **[Hibiscus Teams](https://github.com/hibiscus-software/hibiscus-teams)**: player teams, built on the Teams API.
+- **[Hibiscus Quests](https://github.com/hibiscus-software/hibiscus-quests)**: a quest book with progress per team.
 
 ## The button bar
 

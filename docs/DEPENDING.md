@@ -5,7 +5,7 @@ Java 25 and the same Minecraft version branches (see [RELEASING.md](RELEASING.md
 
 ## From GitHub Packages (normal builds and CI)
 
-Releases are published to `https://maven.pkg.github.com/hibiscus-software/hibiscuslib`. GitHub Packages asks for a
+Releases are published to `https://maven.pkg.github.com/hibiscus-software/hibiscus-lib`. GitHub Packages asks for a
 token even to read public packages.
 
 `gradle.properties` (the consumer's):
@@ -20,7 +20,7 @@ hibiscuslib_version=1.0.0+26.3
 repositories {
     maven {
         name = 'HibiscusLib'
-        url = 'https://maven.pkg.github.com/hibiscus-software/hibiscuslib'
+        url = 'https://maven.pkg.github.com/hibiscus-software/hibiscus-lib'
         credentials {
             // Locally: gpr.user / gpr.key in ~/.gradle/gradle.properties (a token with read:packages).
             // In GitHub Actions: the workflow's GITHUB_ACTOR and GITHUB_TOKEN.
@@ -92,8 +92,8 @@ Teams or Quests, with nothing to publish. Add to the consumer's `settings.gradle
 
 ```groovy
 // Develop against a local Hibiscus Lib checkout instead of the published jar, when there is one.
-// Point at it with -Phibiscuslib_dir=... or hibiscuslib_dir in ~/.gradle/gradle.properties; default ../hibiscuslib.
-def hibiscusLib = file(providers.gradleProperty('hibiscuslib_dir').getOrElse('../hibiscuslib'))
+// Point at it with -Phibiscuslib_dir=... or hibiscuslib_dir in ~/.gradle/gradle.properties; default ../hibiscus-lib.
+def hibiscusLib = file(providers.gradleProperty('hibiscuslib_dir').getOrElse('../hibiscus-lib'))
 if (hibiscusLib.isDirectory()) {
     includeBuild(hibiscusLib) {
         dependencySubstitution {
@@ -103,7 +103,7 @@ if (hibiscusLib.isDirectory()) {
 }
 ```
 
-With the three repositories cloned next to each other (`hibiscuslib/`, `hibiscusteams/`, `hibiscusquests/`) nothing
+With the three repositories cloned next to each other (`hibiscus-lib/`, `hibiscus-teams/`, `hibiscus-quests/`) nothing
 else is needed; otherwise set `hibiscuslib_dir`. The consumer's `runClient`, `runServer` and `runGameTestServer` then
 load Hibiscus Lib from your checkout (built as a jar on the way), and Hibiscus Lib's own game tests run alongside
 the consumer's.
@@ -116,7 +116,7 @@ Packages version is used, so the same `settings.gradle` works everywhere.
 Publish Lib to `~/.m2` and point the consumer at it:
 
 ```sh
-# in hibiscuslib/
+# in hibiscus-lib/
 ./gradlew publishToMavenLocal
 ```
 

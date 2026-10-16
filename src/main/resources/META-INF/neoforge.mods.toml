@@ -1,12 +1,12 @@
 license="${mod_license}"
-issueTrackerURL="https://github.com/hibiscus-software/hibiscuslib/issues"
+issueTrackerURL="https://github.com/hibiscus-software/hibiscus-lib/issues"
 
 [[mods]]
 modId="${mod_id}"
 version="${mod_version}"
 displayName="${mod_name}"
 authors="Hibiscus Software"
-displayURL="https://github.com/hibiscus-software/hibiscuslib"
+displayURL="https://github.com/hibiscus-software/hibiscus-lib"
 description='''
 The shared library for Hibiscus mods: the inventory button bar, a themeable GUI toolkit, config and networking helpers, and the Teams API.
 '''

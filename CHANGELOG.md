@@ -24,7 +24,7 @@ date. How to cut a release is in [docs/RELEASING.md](docs/RELEASING.md).
 
 ## [Unreleased]
 
-Suggested version: **1.0.0** (first release).
+## [1.0.0] - 2026-10-15
 
 ### Added
 
@@ -78,4 +78,5 @@ Suggested version: **1.0.0** (first release).
   - `Profiles`: player name ↔ UUID lookups that work for offline players.
   - `RateLimiter`: per-player limits for client requests.
 
-[Unreleased]: https://github.com/hibiscus-software/hibiscuslib/commits/main
+[Unreleased]: https://github.com/hibiscus-software/hibiscus-lib/compare/v1.0.0+26.3...HEAD
+[1.0.0]: https://github.com/hibiscus-software/hibiscus-lib/commits/v1.0.0+26.3
