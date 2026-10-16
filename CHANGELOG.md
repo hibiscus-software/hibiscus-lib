@@ -24,6 +24,18 @@ date. How to cut a release is in [docs/RELEASING.md](docs/RELEASING.md).
 
 ## [Unreleased]
 
+Suggested version: 1.3.0.
+
+### Added
+
+- **More text markup** in `TextLayout` (quest descriptions, help pages): `*italic*`, inline item icons with
+  `{item:minecraft:diamond}` (with the item's tooltip on hover), and pictures on a line of their own with
+  `{image:<texture> <width> <height>}`, scaled down to fit.
+- **Your own text tokens:** `TextLayout.parse(markup, tokens)` turns `{name:argument}` into any text you like, for
+  example a link that opens a page of your own screen; `TextLayoutWidget.onClickEvent(...)` gets the click first (for
+  `ClickEvent.Custom` events, which would otherwise go to the server). Hibiscus Quests uses it for `{quest:...}` links.
+- The widget gallery's text sample shows the new markup.
+
 ## [1.2.1] - 2026-10-16
 
 ### Fixed

@@ -106,7 +106,7 @@ change or removal. From 1.0 the API only grows: add default methods, never chang
 | Screens | `BaseScreen` (centred panel, popups, close behaviour), `Popup`, `ConfirmDialog` (`.dangerous()`, `.requireTyping(text)` for type-to-confirm), `ContextMenu` |
 | Widgets | `Panel`, `ScrollPanel`, `ListWidget<T>` (`.onContextMenu(...)` for right-click menus), `TextButton`, `IconButton`, `ToggleButton`, `TextInput`, `ColorPicker`, `ItemSlotWidget`, `Tabs`, `TextLayoutWidget` |
 | Theme | `HibiscusTheme.current()`: `color(name)`, `panel(...)`, `inset(...)`, `button(...)`, `draw(...)` |
-| Text | `TextLayout.parse(markup)` (`# headings`, `- bullets`, `**bold**`, `&` colour codes, `[links](https://...)`) |
+| Text | `TextLayout.parse(markup)` (`# headings`, `- bullets`, `**bold**`, `*italic*`, `&` colour codes, `[links](https://...)`, `{item:id}` inline icons, `{image:texture w h}` pictures), `TextLayout.parse(markup, tokens)` for your own `{name:arg}` tokens, `TextLayoutWidget.onClickEvent(...)` for their clicks |
 | Other client | `HibiscusToasts.show(...)`, `RecipeViewers.showRecipes/showUses(stack)`, `Icon` (`sprite`, `item`, `color`, `playerFace(uuid)`, `.withDot(color)`), `HibiscusClientNetwork.sendToServer` |
 | Network | `HibiscusNetwork.channel(bus, version, channel -> ...)`, `sendToPlayer`, `sendToTeam`, `sendToAll` |
 | Files | `SnbtFiles.read/write` (atomic, with `.bak`), `SnbtFiles.configFile(...)` |
