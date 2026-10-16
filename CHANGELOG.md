@@ -41,3 +41,22 @@ Suggested version: **1.0.0** (first release).
   - Right-click any button to edit the bar: tick which buttons to show and drag them into order.
   - `hibiscuslib-client.toml`: `buttons.enabled`, `buttons.location` (`top_left`, `top_right`, `bottom_left`,
     `left_column`), `buttons.hidden` and `buttons.order`.
+  - When there isn't room for more columns (a narrow window, or the recipe book open), columns grow taller instead,
+    clear of the recipe book's tabs and JEI's corner buttons.
+- **GUI toolkit and theme**, so every Hibiscus screen looks like one family and a resource pack can restyle them all.
+  - `HibiscusTheme`: named colours (`text`, `text_muted`, `accent`, `positive`, `warning`, `negative`, `gold` and
+    more) and nine-slice sprites for panels, insets, buttons, text fields, scrollbars, tabs and toggles, from
+    `assets/hibiscuslib/hibiscus_theme/default.json`. A resource pack's copy only needs the keys it changes.
+  - The default theme is a neutral dark UI with a hibiscus coral accent: flat fills and 1 px bevels.
+  - Widgets: `Panel`, `ScrollPanel`, `ListWidget`, `TextButton`, `IconButton`, `ToggleButton`, `TextInput` (with a
+    placeholder and validation), `ColorPicker`, `ItemSlotWidget`, `Tabs` and `TextLayoutWidget`. All work with the
+    keyboard (Tab, arrows, Enter) and the narrator.
+  - `BaseScreen`: a centred panel that shrinks to fit (GUI scale 1 to 4 from 1280×720 up), modal popups
+    (`ConfirmDialog`, `ContextMenu`), and the same close behaviour everywhere (Esc, or right-click outside).
+  - `TextLayout`: wrapped text with `# headings`, `- bullets`, `**bold**`, colour codes and links that ask before
+    opening.
+  - `HibiscusToasts` for themed toasts, and `RecipeViewers.showRecipes` / `showUses`, which open JEI (or EMI) and do
+    nothing when neither is installed. JEI's keys work over item slots in Hibiscus screens.
+  - `/hibiscuslib widgets` opens a gallery of every widget. It's a debug command: there in a development
+    environment, or with `debug.widgetGallery` on in `hibiscuslib-client.toml`.
+

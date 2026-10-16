@@ -26,6 +26,12 @@ through it. Design public pieces for those two consumers.
   (unzip `build/neoForm/neoFormJoined26.3-1/steps/patchUserDev/outputs.jar`) or Arcforge.
 - Tests: `./gradlew build runGameTestServer`. Gametests live in `gametest/` and are registered in
   `HibiscusLibGameTests`.
+- GUI checks: `./gradlew runScreenshotClient` (source set `src/screenshots`, never in a jar) opens a flat creative
+  world, screenshots the button bar, edit screen and widget gallery at GUI scales 1-4 into
+  `run/screenshotClient/screenshots/`, and quits. Look at them after any GUI change; the README's images come from
+  there (`docs/images/`).
+- Item stacks can't be made during mod construction or client setup in 26.3 (data components aren't bound yet):
+  give icons a supplier and make the stack on first use.
 - Changes go under `## [Unreleased]` in CHANGELOG.md as they're made.
 - Releasing: follow docs/RELEASING.md. A pushed `v<mod_version>+<minecraft_version>` tag (e.g. `v1.0.0+26.3`) runs
   `.github/workflows/release.yml`, which publishes the mod and API jars on GitHub, to GitHub Packages, and uploads the

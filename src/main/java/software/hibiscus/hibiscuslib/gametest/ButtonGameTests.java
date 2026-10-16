@@ -14,6 +14,8 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
+import software.hibiscus.hibiscuslib.button.ButtonLayout;
+import software.hibiscus.hibiscuslib.button.ButtonLocation;
 import software.hibiscus.hibiscuslib.button.ButtonSpec;
 import software.hibiscus.hibiscuslib.button.HibiscusButtons;
 
@@ -109,5 +111,57 @@ final class ButtonGameTests {
         } finally {
             HibiscusButtons.setDataButtons(Map.of());
         }
+    }
+
+    private static void expectAt(GameTestHelper helper, List<int[]> positions, int index, int x, int y) {
+        int[] position = positions.get(index);
+        if (position == null || position[0] != x || position[1] != y) {
+            helper.fail("button " + index + ": expected " + x + "," + y + ", got "
+                    + (position == null ? "nothing" : position[0] + "," + position[1]));
+        }
+    }
+
+    // A survival inventory on a 640x360 GUI: 9 to a column (166 px panel), then a second column further left.
+    static void layoutWraps(GameTestHelper helper) {
+        ButtonLayout.Area area = new ButtonLayout.Area(232, 97, 408, 166, 640, 360);
+        List<int[]> positions = ButtonLayout.place(11, ButtonLocation.TOP_LEFT, area);
+        expectAt(helper, positions, 0, 212, 97);
+        expectAt(helper, positions, 8, 212, 97 + 8 * 18);
+        expectAt(helper, positions, 9, 194, 97);
+        expectAt(helper, positions, 10, 194, 115);
+        helper.succeed();
+    }
+
+    // The recipe book open at 1280x720, GUI scale 3 (427x240): room for one column only, so it grows taller.
+    static void layoutNarrowGrowsTaller(GameTestHelper helper) {
+        ButtonLayout.Area area = new ButtonLayout.Area(24, 37, 377, 166, 427, 240);
+        List<int[]> positions = ButtonLayout.place(11, ButtonLocation.TOP_LEFT, area);
+        expectAt(helper, positions, 0, 4, 37);
+        expectAt(helper, positions, 10, 4, 37 + 10 * 18);
+        helper.succeed();
+    }
+
+    // More buttons than the screen can hold: the column moves up to fit and the rest are left out.
+    static void layoutDropsOverflow(GameTestHelper helper) {
+        ButtonLayout.Area area = new ButtonLayout.Area(24, 37, 377, 166, 427, 240);
+        List<int[]> positions = ButtonLayout.place(30, ButtonLocation.TOP_LEFT, area);
+        int maxRows = (240 - 4 + 2) / 18;
+        // The full-height column sits on the screen's bottom edge.
+        int top = 240 - 2 - (maxRows * 18 - 2);
+        expectAt(helper, positions, 0, 4, top);
+        expectAt(helper, positions, maxRows - 1, 4, top + (maxRows - 1) * 18);
+        if (positions.get(maxRows) != null || positions.get(29) != null) {
+            helper.fail("buttons past what fits should be left out");
+        }
+        helper.succeed();
+    }
+
+    // bottom_left fills upward from the panel's bottom.
+    static void layoutBottomLeft(GameTestHelper helper) {
+        ButtonLayout.Area area = new ButtonLayout.Area(232, 97, 408, 166, 640, 360);
+        List<int[]> positions = ButtonLayout.place(2, ButtonLocation.BOTTOM_LEFT, area);
+        expectAt(helper, positions, 0, 212, 97 + 166 - 16);
+        expectAt(helper, positions, 1, 212, 97 + 166 - 16 - 18);
+        helper.succeed();
     }
 }

@@ -17,7 +17,6 @@ import org.jspecify.annotations.Nullable;
 import com.mojang.blaze3d.platform.InputConstants;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.locale.Language;
@@ -27,6 +26,8 @@ import net.minecraft.util.Mth;
 import software.hibiscus.hibiscuslib.button.ButtonSpec;
 import software.hibiscus.hibiscuslib.button.HibiscusButtons;
 import software.hibiscus.hibiscuslib.client.gui.HibiscusTheme;
+import software.hibiscus.hibiscuslib.client.gui.widget.TextButton;
+import software.hibiscus.hibiscuslib.client.gui.widget.ThemedScrollbar;
 import software.hibiscus.hibiscuslib.config.HibiscusLibClientConfig;
 
 // Opened by right-clicking a sidebar button: shows every button, lets the player tick which to show and drag rows
@@ -74,12 +75,11 @@ public class EditButtonsScreen extends Screen {
         listHeight = panelHeight - HEADER - FOOTER;
         int buttonY = panelY + panelHeight - 26;
         int buttonWidth = (PANEL_WIDTH - 24) / 3;
-        addRenderableWidget(Button.builder(Component.translatable("gui.done"), button -> save())
-                .bounds(panelX + 8, buttonY, buttonWidth, 20).build());
-        addRenderableWidget(Button.builder(Component.translatable("screen.hibiscuslib.edit_buttons.reset"), button -> reset())
-                .bounds(panelX + 12 + buttonWidth, buttonY, buttonWidth, 20).build());
-        addRenderableWidget(Button.builder(Component.translatable("gui.cancel"), button -> onClose())
-                .bounds(panelX + 16 + buttonWidth * 2, buttonY, buttonWidth, 20).build());
+        addRenderableWidget(new TextButton(panelX + 8, buttonY, buttonWidth, 20, Component.translatable("gui.done"), button -> save()).accent());
+        addRenderableWidget(new TextButton(panelX + 12 + buttonWidth, buttonY, buttonWidth, 20,
+                Component.translatable("screen.hibiscuslib.edit_buttons.reset"), button -> reset()));
+        addRenderableWidget(new TextButton(panelX + 16 + buttonWidth * 2, buttonY, buttonWidth, 20,
+                Component.translatable("gui.cancel"), button -> onClose()));
         clampScroll();
     }
 
@@ -128,6 +128,12 @@ public class EditButtonsScreen extends Screen {
             extractRow(graphics, theme, id, y, hovered);
         }
         graphics.disableScissor();
+        int contentHeight = rows.size() * ROW_HEIGHT;
+        if (contentHeight > listHeight) {
+            int thumbHeight = Math.max(16, listHeight * listHeight / contentHeight);
+            int thumbY = listTop + (int) (scroll * (listHeight - thumbHeight) / (contentHeight - listHeight));
+            ThemedScrollbar.draw(graphics, panelX + PANEL_WIDTH - 7 - ThemedScrollbar.WIDTH, listTop, listHeight, thumbY, thumbHeight, false);
+        }
         if (dragging != null) {
             graphics.nextStratum();
             int y = (int) dragY - ROW_HEIGHT / 2;
@@ -140,7 +146,7 @@ public class EditButtonsScreen extends Screen {
     private void extractRow(GuiGraphicsExtractor graphics, HibiscusTheme theme, Identifier id, int y, boolean hovered) {
         ButtonSpec spec = buttons.get(id);
         int left = panelX + 8;
-        int right = panelX + PANEL_WIDTH - 8;
+        int right = panelX + PANEL_WIDTH - 10 - ThemedScrollbar.WIDTH;
         if (hovered) {
             graphics.fill(left, y, right, y + ROW_HEIGHT, theme.color(HibiscusTheme.HOVER));
         }

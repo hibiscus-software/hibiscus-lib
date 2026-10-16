@@ -32,6 +32,7 @@ public class HibiscusLibClient {
         modEventBus.addListener(HibiscusLibClient::addReloadListeners);
         ButtonBar.register();
         ButtonKeys.register(modEventBus);
+        HibiscusLibClientCommands.register();
     }
 
     private static void addReloadListeners(AddClientReloadListenersEvent event) {

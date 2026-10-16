@@ -18,9 +18,10 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.resources.Identifier;
+import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import software.hibiscus.hibiscuslib.button.ButtonLocation;
+import software.hibiscus.hibiscuslib.button.ButtonLayout;
 import software.hibiscus.hibiscuslib.button.ButtonSpec;
 import software.hibiscus.hibiscuslib.button.HibiscusButtons;
 import software.hibiscus.hibiscuslib.config.HibiscusLibClientConfig;
@@ -29,10 +30,11 @@ import software.hibiscus.hibiscuslib.config.HibiscusLibClientConfig;
 // and laid out again every frame from the screen's leftPos/topPos, so they follow the recipe book as it opens and
 // closes (which moves the panel without re-initialising the screen).
 public final class ButtonBar {
-    // Space per button: 16 px and a 2 px gap.
-    static final int STEP = SidebarButton.SIZE + 2;
-    // Gap between the bar and the panel (or the recipe book).
-    private static final int MARGIN = 4;
+    // How far the recipe book's category tabs stick out left of the book.
+    private static final int RECIPE_BOOK_TABS = 30;
+    // JEI draws its bookmark buttons in the bottom corners whatever the exclusion areas say, so a tall column stops short.
+    private static final int JEI_BOTTOM_BUTTONS = 24;
+    private static final boolean JEI = ModList.get().isLoaded("jei");
 
     // The open inventory's buttons; empty when none is open.
     private static List<SidebarButton> current = List.of();
@@ -100,46 +102,29 @@ public final class ButtonBar {
         if (shown.isEmpty()) {
             return;
         }
-        Bounds bounds = bounds(screen);
-        ButtonLocation location = HibiscusLibClientConfig.BUTTONS_LOCATION.get();
-        int perColumn = Math.max(1, (bounds.height + 2) / STEP);
+        List<int[]> positions = ButtonLayout.place(shown.size(), HibiscusLibClientConfig.BUTTONS_LOCATION.get(), area(screen));
         for (int i = 0; i < shown.size(); i++) {
-            int column = i / perColumn;
-            int row = i % perColumn;
-            int x;
-            int y;
-            switch (location) {
-                case TOP_RIGHT -> {
-                    x = bounds.right + MARGIN + column * STEP;
-                    y = bounds.top + row * STEP;
-                }
-                case BOTTOM_LEFT -> {
-                    x = bounds.left - MARGIN - SidebarButton.SIZE - column * STEP;
-                    y = bounds.top + bounds.height - SidebarButton.SIZE - row * STEP;
-                }
-                case LEFT_COLUMN -> {
-                    x = 2 + column * STEP;
-                    y = bounds.top + row * STEP;
-                }
-                default -> {
-                    x = bounds.left - MARGIN - SidebarButton.SIZE - column * STEP;
-                    y = bounds.top + row * STEP;
-                }
+            SidebarButton button = shown.get(i);
+            int[] position = positions.get(i);
+            if (position == null) {
+                // No room on this screen: left out rather than drawn off screen or over the panel.
+                button.visible = false;
+                button.active = false;
+            } else {
+                button.setPosition(position[0], position[1]);
             }
-            shown.get(i).setPosition(x, y);
         }
     }
 
-    // The panel the bar sits beside: the inventory, widened left over the recipe book when that's open beside it.
-    private static Bounds bounds(AbstractContainerScreen<?> screen) {
+    // The panel the bar sits beside: the inventory, widened left over the recipe book (and its tabs) when that's
+    // open beside it.
+    private static ButtonLayout.Area area(AbstractContainerScreen<?> screen) {
         int left = screen.getLeftPos();
-        int top = screen.getTopPos();
-        int width = screen.getImageWidth();
-        int height = screen.getImageHeight();
         if (screen instanceof AbstractRecipeBookScreen<?> && recipeBookBeside(screen)) {
-            left -= RecipeBookComponent.IMAGE_WIDTH + 1;
+            left -= RecipeBookComponent.IMAGE_WIDTH + 1 + RECIPE_BOOK_TABS;
         }
-        return new Bounds(left, top, screen.getLeftPos() + width, height);
+        return new ButtonLayout.Area(left, screen.getTopPos(), screen.getLeftPos() + screen.getImageWidth(), screen.getImageHeight(),
+                screen.width, screen.height - (JEI ? JEI_BOTTOM_BUTTONS : 0));
     }
 
     // The recipe book pushes the panel right of centre when it opens beside it (it overlays the panel on narrow
@@ -159,5 +144,4 @@ public final class ButtonBar {
         return areas;
     }
 
-    private record Bounds(int left, int top, int right, int height) {}
 }

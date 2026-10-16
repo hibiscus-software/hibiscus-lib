@@ -40,6 +40,10 @@ public final class HibiscusLibGameTests {
         TESTS.put("buttons_bad_ids_ignored", ButtonGameTests::badIdsIgnored);
         TESTS.put("buttons_duplicate_rejected", ButtonGameTests::duplicateRejected);
         TESTS.put("buttons_code_wins_over_data", ButtonGameTests::codeWinsOverData);
+        TESTS.put("buttons_layout_wraps", ButtonGameTests::layoutWraps);
+        TESTS.put("buttons_layout_narrow_grows_taller", ButtonGameTests::layoutNarrowGrowsTaller);
+        TESTS.put("buttons_layout_drops_overflow", ButtonGameTests::layoutDropsOverflow);
+        TESTS.put("buttons_layout_bottom_left", ButtonGameTests::layoutBottomLeft);
         TESTS.forEach((name, test) -> FUNCTIONS.register(name, () -> test));
     }
 

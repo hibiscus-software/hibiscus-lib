@@ -22,6 +22,11 @@ sourceSets {
         compileClasspath += sourceSets.api.output
         runtimeClasspath += sourceSets.api.output
     }
+    // Development only, never in a jar: the screenshot harness run by runScreenshotClient (see ScreenshotHarness).
+    screenshots {
+        compileClasspath += sourceSets.main.output + sourceSets.api.output + sourceSets.main.compileClasspath
+        runtimeClasspath += sourceSets.main.output + sourceSets.api.output + sourceSets.main.runtimeClasspath
+    }
 }
 
 def apiVersion = (file('src/api/java/software/hibiscus/hibiscuslib/api/HibiscusLibApi.java').getText('UTF-8') =~ /API_VERSION = "([^"]+)"/)[0][1]
@@ -78,6 +83,15 @@ runs {
     // Launches GameTestServer, runs every registered gametest, then exits.
     gameTestServer {
         systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+    }
+
+    // Opens a flat creative world, screenshots the button bar and widget gallery at each GUI scale into
+    // run/screenshotClient/screenshots/, then quits. The README's images come from here.
+    screenshotClient {
+        runType 'client'
+        modSource project.sourceSets.screenshots
+        systemProperty 'hibiscuslib.screenshots', 'true'
+        programArguments.addAll '--width', '1280', '--height', '720'
     }
 
     clientData {
