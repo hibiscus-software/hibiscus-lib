@@ -98,9 +98,10 @@ The API is only published when its artifact version (`API_VERSION` plus the Mine
 the previous release tag. A release that leaves the API alone (like 1.1.0, which only changed the toolkit) publishes
 the mod and keeps pointing API users at the existing `hibiscuslib-api` version.
 
-For Hibiscus Teams' and Hibiscus Quests' workflows to download the packages with their own `GITHUB_TOKEN`, give those
-repositories read access once: the package's page → **Package settings** → **Manage Actions access** → add
-`hibiscus-teams` and `hibiscus-quests` with the Read role. Do it for both packages after the first release.
+Maven packages take their access from this repository: there are no per-package access settings to grant (the
+package's settings page only offers deleting it and managing versions). Hibiscus Teams' and Hibiscus Quests' workflows
+read the packages with the `HIBISCUS_PACKAGES_TOKEN` organisation secret (a classic token with `read:packages`), as
+[DEPENDING.md](DEPENDING.md) describes.
 
 GitHub Packages never replaces a published version. If a release run fails after this step, publish the fix as a new
 version rather than moving the tag; if it failed before it, see below.

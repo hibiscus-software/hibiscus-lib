@@ -53,18 +53,23 @@ gpr.user=<your GitHub user name>
 gpr.key=<a personal access token (classic) with read:packages>
 ```
 
-In the consumer's workflows, pass the token to Gradle:
+In the consumer's workflows, pass a token to Gradle. GitHub's Maven registry has no per-package access settings (its
+packages take their access from the `hibiscus-lib` repository, and there's no "Manage Actions access" page for them),
+so use an organisation secret, `HIBISCUS_PACKAGES_TOKEN`: a personal access token (classic) with only the
+`read:packages` scope, shared with the consumer repositories (Organisation settings → Secrets and variables →
+Actions). Until it's set, the workflow falls back to its own `GITHUB_TOKEN`, which may be enough because the
+packages are public:
 
 ```yaml
       - name: Build with Gradle
         env:
           GITHUB_ACTOR: ${{ github.actor }}
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.HIBISCUS_PACKAGES_TOKEN || github.token }}
         run: ./gradlew build
 ```
 
-and give the consumer's repository read access to both packages once (package page → **Package settings** →
-**Manage Actions access**).
+If Gradle reports `401` or `403` for `maven.pkg.github.com/hibiscus-software/hibiscus-lib`, the secret is missing or
+the token has expired or lacks `read:packages`.
 
 Then declare the dependency in `META-INF/neoforge.mods.toml`:
 
