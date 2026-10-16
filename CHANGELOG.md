@@ -77,3 +77,5 @@ Suggested version: **1.0.0** (first release).
   - `PermissionLevels`: permission nodes that default to a vanilla op level, so permission mods can manage them.
   - `Profiles`: player name ↔ UUID lookups that work for offline players.
   - `RateLimiter`: per-player limits for client requests.
+
+[Unreleased]: https://github.com/hibiscus-software/hibiscuslib/commits/main

@@ -33,6 +33,8 @@ through it. Design public pieces for those two consumers.
 - Item stacks can't be made during mod construction or client setup in 26.3 (data components aren't bound yet):
   give icons a supplier and make the stack on first use.
 - Changes go under `## [Unreleased]` in CHANGELOG.md as they're made.
+- Consumers: docs/DEPENDING.md has the Gradle setup (GitHub Packages, includeBuild, mavenLocal); docs/API.md the
+  Teams API and toolkit. Keep both current when public pieces change.
 - Releasing: follow docs/RELEASING.md. A pushed `v<mod_version>+<minecraft_version>` tag (e.g. `v1.0.0+26.3`) runs
   `.github/workflows/release.yml`, which publishes the mod and API jars on GitHub, to GitHub Packages, and uploads the
   mod jar to CurseForge.

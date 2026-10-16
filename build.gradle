@@ -107,6 +107,9 @@ configurations {
 dependencies {
     implementation "net.neoforged:neoforge:${neo_version}"
     apiCompileOnly "net.neoforged:neoforge:${neo_version}"
+    // Passes the API's classes on to builds that include this one (includeBuild, see docs/DEPENDING.md); the
+    // published jars already contain them, and file dependencies aren't written to the POM.
+    api files(sourceSets.api.output)
 
     // Optional integration: compiled against, never required at runtime. The dev client runs with it.
     // EMI has no 26.3 build to compile against yet, so its bridge goes through reflection (RecipeViewers).
@@ -209,6 +212,12 @@ publishing {
             }
         }
     }
+}
+
+// No Gradle module metadata: it would list NeoForge as a dependency, which consumers already have (the POMs leave
+// dependencies out for the same reason).
+tasks.withType(GenerateModuleMetadata).configureEach {
+    enabled = false
 }
 
 // Ship the MIT license inside the mod jar.

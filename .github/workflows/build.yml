@@ -26,5 +26,19 @@ jobs:
       - name: Make Gradle wrapper executable
         run: chmod +x ./gradlew
 
+      # Compiles, checks the API's Javadoc and builds the mod and API jars.
       - name: Build with Gradle
         run: ./gradlew build
+
+      # The same game tests release.yml runs, so a failure shows up here rather than on a pushed tag.
+      - name: Run game tests
+        run: ./gradlew runGameTestServer
+
+      # Every build's jars (the mod and the API), downloadable from the run's Summary page for 30 days.
+      - name: Upload jars
+        uses: actions/upload-artifact@v4
+        with:
+          name: hibiscuslib-${{ github.sha }}
+          path: build/libs/*.jar
+          if-no-files-found: error
+          retention-days: 30

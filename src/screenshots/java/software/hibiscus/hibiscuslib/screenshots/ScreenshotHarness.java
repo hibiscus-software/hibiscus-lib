@@ -120,6 +120,9 @@ public final class ScreenshotHarness {
         }
         if (!planned) {
             planned = true;
+            // No movement tutorial toast in the pictures.
+            minecraft.options.tutorialStep = net.minecraft.client.tutorial.TutorialSteps.NONE;
+            minecraft.getTutorial().setStep(net.minecraft.client.tutorial.TutorialSteps.NONE);
             // The client half of the Teams API fallback: the local player's own solo team.
             HibiscusLib.LOGGER.info("ClientTeams.myTeam() in world: {}", software.hibiscus.hibiscuslib.api.team.ClientTeams.myTeam());
             plan(minecraft);
@@ -227,7 +230,10 @@ public final class ScreenshotHarness {
                 }
             }, 30);
             shot("gallery_menu_toast_" + tag);
-            then(() -> show(minecraft, null), 5);
+            then(() -> {
+                show(minecraft, null);
+                minecraft.gui.toastManager().clear();
+            }, 5);
         }
     }
 
