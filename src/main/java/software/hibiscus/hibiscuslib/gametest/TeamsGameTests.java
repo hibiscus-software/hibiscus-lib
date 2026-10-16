@@ -26,7 +26,9 @@ import software.hibiscus.hibiscuslib.team.SoloTeamStore;
 import software.hibiscus.hibiscuslib.team.SoloTeams;
 
 // The Teams API with no teams mod installed: Hibiscus Lib's fallback, where every player is their own team. These are
-// the guarantees Hibiscus Quests relies on to work without Hibiscus Teams.
+// the guarantees Hibiscus Quests relies on to work without Hibiscus Teams. They test the fallback itself
+// (SoloTeams.INSTANCE) rather than TeamsApi.get(), so they also pass in a teams mod's dev runs, where these tests run
+// alongside the teams mod's own and TeamsApi.get() is the teams mod.
 final class TeamsGameTests {
     private static final Identifier QUESTS = Identifier.fromNamespaceAndPath("hibiscusquests", "progress");
     private static final Identifier OTHER = Identifier.fromNamespaceAndPath("othermod", "data");
@@ -55,10 +57,15 @@ final class TeamsGameTests {
         }
     }
 
+    // TeamsApi.get() is the fallback unless a teams mod has installed itself, in which case it's that mod's.
     static void fallbackInstalled(GameTestHelper helper) {
-        check(helper, TeamsApi.isFallback(), "no teams mod is installed, so the fallback should be in use");
-        check(helper, TeamsApi.get() == SoloTeams.INSTANCE, "TeamsApi.get() should be the solo-team fallback");
-        check(helper, TeamsApi.installedBy().isEmpty(), "installedBy should be empty with the fallback");
+        if (TeamsApi.isFallback()) {
+            check(helper, TeamsApi.get() == SoloTeams.INSTANCE, "TeamsApi.get() should be the solo-team fallback");
+            check(helper, TeamsApi.installedBy().isEmpty(), "installedBy should be empty with the fallback");
+        } else {
+            check(helper, TeamsApi.installedBy().isPresent(), "a replaced fallback should say which mod replaced it");
+            check(helper, TeamsApi.get() != SoloTeams.INSTANCE, "TeamsApi.get() should be the installed teams mod");
+        }
         helper.succeed();
     }
 
@@ -68,7 +75,7 @@ final class TeamsGameTests {
         try {
             UUID id = player.getUUID();
             UUID stranger = UUID.randomUUID();
-            TeamManager teams = TeamsApi.get();
+            TeamManager teams = SoloTeams.INSTANCE;
             Team team = teams.teamOf(id);
             check(helper, team.id().equals(id), "a solo team's id is its player's UUID");
             check(helper, team.type() == TeamType.PLAYER, "type should be PLAYER");
@@ -91,7 +98,7 @@ final class TeamsGameTests {
     }
 
     static void unknownTeamEmpty(GameTestHelper helper) {
-        check(helper, TeamsApi.get().team(UUID.randomUUID()).isEmpty(), "team() of a never-seen UUID should be empty");
+        check(helper, SoloTeams.INSTANCE.team(UUID.randomUUID()).isEmpty(), "team() of a never-seen UUID should be empty");
         helper.succeed();
     }
 
@@ -101,14 +108,14 @@ final class TeamsGameTests {
         ServerPlayer player = join(helper);
         try {
             UUID id = player.getUUID();
-            Team team = TeamsApi.get().teamOf(id);
+            Team team = SoloTeams.INSTANCE.teamOf(id);
             team.extraData(QUESTS).putInt("completed", 7);
             team.extraData(OTHER).putString("note", "hello");
             SoloTeamStore store = SoloTeamStore.get(helper.getLevel().getServer());
             store.setDirty(false);
             team.markDirty();
             check(helper, store.isDirty(), "markDirty should mark the saved data dirty");
-            Team again = TeamsApi.get().teamOf(id);
+            Team again = SoloTeams.INSTANCE.teamOf(id);
             CompoundTag quests = again.extraData(QUESTS);
             check(helper, quests.getIntOr("completed", -1) == 7, "extraData should keep its values between lookups");
             check(helper, !quests.contains("note") && again.extraData(OTHER).getStringOr("note", "").equals("hello"),

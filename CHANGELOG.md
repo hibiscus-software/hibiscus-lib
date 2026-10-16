@@ -24,6 +24,14 @@ date. How to cut a release is in [docs/RELEASING.md](docs/RELEASING.md).
 
 ## [Unreleased]
 
+Suggested version: **1.1.1** (a fix; the API is unchanged).
+
+### Fixed
+
+- Two of the Teams API game tests (`teams_fallback_installed`, `teams_extra_data_persists`) failed when a teams mod
+  was installed, as in Hibiscus Teams' dev runs, where Hibiscus Lib's tests run alongside its own. The fallback tests
+  now test the fallback directly, and `teams_fallback_installed` accepts a teams mod that has installed itself.
+
 ## [1.1.0] - 2026-10-15
 
 ### Added
