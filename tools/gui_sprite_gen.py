@@ -69,7 +69,8 @@ def save(name, img, border=None, width=16, height=16, stretch=False):
 
 
 def toggle(on):
-    """A 22x12 switch: a recess track with a knob, coral when on."""
+    """A 22x12 switch: a track with a knob. Only the track's colour and the knob's side change between off and on;
+    the knob is drawn the same way in both, so the two read as one control."""
     img = Image.new("RGBA", (22, 12), (0, 0, 0, 0))
     px = img.load()
     track = ACCENT if on else RECESS
@@ -84,11 +85,11 @@ def toggle(on):
     for y in range(1, 11):
         for x in range(kx, kx + 10):
             if x == kx or y == 1:
-                px[x, y] = rgba("#FFFFFF" if on else HIGHLIGHT)
+                px[x, y] = rgba("#FFFFFF")
             elif x == kx + 9 or y == 10:
-                px[x, y] = rgba(BUTTON_PRESSED if not on else "#C9C9C9")
+                px[x, y] = rgba(TEXT_MUTED)
             else:
-                px[x, y] = rgba("#F4F4F4" if on else TEXT_MUTED)
+                px[x, y] = rgba(TEXT)
     return img
 
 

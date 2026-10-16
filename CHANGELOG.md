@@ -24,6 +24,17 @@ date. How to cut a release is in [docs/RELEASING.md](docs/RELEASING.md).
 
 ## [Unreleased]
 
+Suggested version: **1.2.1** (fixes).
+
+### Fixed
+
+- Toasts didn't stack evenly: a long message wrapped onto two lines and grew the toast to 42 pixels, which took two
+  of vanilla's 32-pixel toast slots and left uneven gaps. Every Hibiscus toast is now the same size, 240 by 32 pixels
+  (one slot), with an even 2-pixel gap below it, laid out like vanilla's: the title, then one line of message, which
+  ends in an ellipsis when it's too long.
+- The toggle switch's knob was drawn differently when on (near-white, faint bevel) and off (grey, strong bevel). It's
+  now the same knob in both; only the track colour and the knob's side change.
+
 ## [1.2.0] - 2026-10-16
 
 ### Added
@@ -31,6 +42,9 @@ date. How to cut a release is in [docs/RELEASING.md](docs/RELEASING.md).
 - `ListWidget.onContextMenu((row, x, y) -> ...)`: a right click on a row, or Shift+F10 / the Menu key on the selected
   row, selects it and asks for its context menu (for example a `ContextMenu` built at that position). Shown on the
   widget gallery's Lists tab.
+
+### Fixed
+
 - A mod list icon and banner: the hibiscus icon shows beside Hibiscus Lib in NeoForge's mod list, and the Hibiscus Lib
   banner at the top of its info panel (`iconFile` / `bannerFile` in `neoforge.mods.toml`).
 
