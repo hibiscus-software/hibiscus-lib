@@ -75,6 +75,7 @@ hibiscus coral accent, and works from GUI scale 1 to 4.
 | ![Buttons, icon buttons and toggles](docs/images/gallery-buttons.png) | ![Text inputs, colour picker and item slots](docs/images/gallery-inputs.png) |
 | ![A list with icons and two lines of text](docs/images/gallery-lists.png) | ![Wrapped text with headings, bullets, colours and links](docs/images/gallery-text.png) |
 | ![A confirmation dialog](docs/images/gallery-dialog.png) | ![A context menu and a toast](docs/images/gallery-menu-toast.png) |
+| ![A dialog that asks you to type the name to confirm](docs/images/gallery-typed-dialog.png) | ![Player faces, with an online dot](docs/images/gallery-faces.png) |
 
 Mod developers can open this gallery with `/hibiscuslib widgets` in a development environment (or with
 `debug.widgetGallery = true` in `hibiscuslib-client.toml`).

@@ -103,11 +103,11 @@ change or removal. From 1.0 the API only grows: add default methods, never chang
 | Area | Classes |
 |---|---|
 | Button bar | `HibiscusButtons.register(id, ButtonSpec)`, `ButtonSpec.builder()`, `ButtonBadge`, data files in `assets/<ns>/hibiscus_buttons/` |
-| Screens | `BaseScreen` (centred panel, popups, close behaviour), `Popup`, `ConfirmDialog`, `ContextMenu` |
+| Screens | `BaseScreen` (centred panel, popups, close behaviour), `Popup`, `ConfirmDialog` (`.dangerous()`, `.requireTyping(text)` for type-to-confirm), `ContextMenu` |
 | Widgets | `Panel`, `ScrollPanel`, `ListWidget<T>`, `TextButton`, `IconButton`, `ToggleButton`, `TextInput`, `ColorPicker`, `ItemSlotWidget`, `Tabs`, `TextLayoutWidget` |
 | Theme | `HibiscusTheme.current()`: `color(name)`, `panel(...)`, `inset(...)`, `button(...)`, `draw(...)` |
 | Text | `TextLayout.parse(markup)` (`# headings`, `- bullets`, `**bold**`, `&` colour codes, `[links](https://...)`) |
-| Other client | `HibiscusToasts.show(...)`, `RecipeViewers.showRecipes/showUses(stack)`, `Icon`, `HibiscusClientNetwork.sendToServer` |
+| Other client | `HibiscusToasts.show(...)`, `RecipeViewers.showRecipes/showUses(stack)`, `Icon` (`sprite`, `item`, `color`, `playerFace(uuid)`, `.withDot(color)`), `HibiscusClientNetwork.sendToServer` |
 | Network | `HibiscusNetwork.channel(bus, version, channel -> ...)`, `sendToPlayer`, `sendToTeam`, `sendToAll` |
 | Files | `SnbtFiles.read/write` (atomic, with `.bak`), `SnbtFiles.configFile(...)` |
 | Permissions | `PermissionLevels.node(modId, name, defaultLevel)`, `check`, `hasLevel`, `requires(node, level)` for commands |

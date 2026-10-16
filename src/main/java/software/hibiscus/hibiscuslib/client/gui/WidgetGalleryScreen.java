@@ -166,6 +166,20 @@ public class WidgetGalleryScreen extends BaseScreen {
         empty.emptyText(t("list.empty"));
         y += 46;
         content.add(new TextLayoutWidget(0, 0, width, t("list.hint").getString()), 0, y);
+        y += 24;
+        y = heading(content, width, y, "section.faces");
+        // The local player (online, with a dot) and two players the client doesn't know (default skins).
+        java.util.List<Icon> faces = new java.util.ArrayList<>();
+        if (minecraft.player != null) {
+            faces.add(Icon.playerFace(minecraft.player.getUUID()).withDot(HibiscusTheme.current().color(HibiscusTheme.POSITIVE)));
+        }
+        faces.add(Icon.playerFace(java.util.UUID.nameUUIDFromBytes("hibiscus-demo-1".getBytes(java.nio.charset.StandardCharsets.UTF_8))));
+        faces.add(Icon.playerFace(java.util.UUID.nameUUIDFromBytes("hibiscus-demo-2".getBytes(java.nio.charset.StandardCharsets.UTF_8))));
+        for (int i = 0; i < faces.size(); i++) {
+            content.add(new IconButton(faces.get(i), t("section.faces"), button -> {}).flat(), i * 24, y);
+        }
+        y += 24;
+        content.add(new TextLayoutWidget(0, 0, width, t("faces.hint").getString()), 0, y);
     }
 
     private void text(ScrollPanel content, int width) {
@@ -190,6 +204,10 @@ public class WidgetGalleryScreen extends BaseScreen {
                 .build(button.getX(), button.getBottom()))), 0, y);
         content.add(new TextButton(half, t("popup.toast"), button -> HibiscusToasts.show(t("toast.title"), t("toast.message"),
                 Icon.item(new ItemStack(Items.WRITABLE_BOOK)))), half + 4, y);
+        y += 24;
+        content.add(new TextButton(half, t("popup.typed"), button -> openPopup(new ConfirmDialog(t("popup.typed.title"),
+                t("popup.typed.message"), t("popup.typed.confirm"), Component.translatable("gui.cancel"),
+                yes -> status = t(yes ? "status.confirmed" : "status.cancelled")).dangerous().requireTyping("Coral"))), 0, y);
         y += 28;
         content.add(new TextLayoutWidget(0, 0, width, t("popup.hint").getString()), 0, y);
     }

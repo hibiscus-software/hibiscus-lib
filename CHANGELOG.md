@@ -24,6 +24,21 @@ date. How to cut a release is in [docs/RELEASING.md](docs/RELEASING.md).
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-10-15
+
+### Added
+
+- `ConfirmDialog.requireTyping(text)`: for actions that can't be undone, the confirm button stays disabled until the
+  player types the given text (such as the name of the team being disbanded).
+- `Icon.playerFace(uuid)`: a player's face from their skin, for offline players too (the default skin until theirs
+  loads), and `Icon.withDot(color)` to mark an icon, for example with an online dot.
+- Both are in the widget gallery (`/hibiscuslib widgets`): a type-to-confirm dialog on the Popups tab and player
+  faces on the Lists tab.
+
+### Fixed
+
+- Disabled themed buttons drew their label in vanilla's grey instead of the theme's disabled colour.
+
 ## [1.0.0] - 2026-10-15
 
 ### Added
@@ -78,5 +93,6 @@ date. How to cut a release is in [docs/RELEASING.md](docs/RELEASING.md).
   - `Profiles`: player name ↔ UUID lookups that work for offline players.
   - `RateLimiter`: per-player limits for client requests.
 
-[Unreleased]: https://github.com/hibiscus-software/hibiscus-lib/compare/v1.0.0+26.3...HEAD
+[Unreleased]: https://github.com/hibiscus-software/hibiscus-lib/compare/v1.1.0+26.3...HEAD
+[1.1.0]: https://github.com/hibiscus-software/hibiscus-lib/compare/v1.0.0+26.3...v1.1.0+26.3
 [1.0.0]: https://github.com/hibiscus-software/hibiscus-lib/commits/v1.0.0+26.3

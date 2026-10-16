@@ -11,7 +11,7 @@ token even to read public packages.
 `gradle.properties` (the consumer's):
 
 ```properties
-hibiscuslib_version=1.0.0+26.3
+hibiscuslib_version=1.1.0+26.3
 ```
 
 `build.gradle`:
@@ -72,7 +72,7 @@ Then declare the dependency in `META-INF/neoforge.mods.toml`:
 [[dependencies.${mod_id}]]
     modId="hibiscuslib"
     type="required"
-    versionRange="[1.0.0,)"
+    versionRange="[1.1.0,)"
     ordering="AFTER"
     side="BOTH"
 ```

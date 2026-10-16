@@ -123,7 +123,7 @@ public class ContextMenu extends Popup {
             int color = !active ? theme.color(HibiscusTheme.TEXT_DISABLED)
                     : item.danger() ? theme.color(HibiscusTheme.NEGATIVE) : theme.text();
             int textX = getX() + textIndent;
-            graphics.text(font, Language.getInstance().getVisualOrder(font.substrByWidth(getMessage(), getRight() - textX - 3)),
+            graphics.text(font, Language.getInstance().getVisualOrder(font.substrByWidth(label(), getRight() - textX - 3)),
                     textX, getY() + 4, color, false);
         }
     }

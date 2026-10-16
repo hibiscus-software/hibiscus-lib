@@ -43,7 +43,7 @@ public class TextButton extends HibiscusButton {
         extractBackground(graphics);
         boolean hasIcon = icon != Icon.NONE;
         int room = getWidth() - 8 - (hasIcon ? 18 : 0);
-        var label = Language.getInstance().getVisualOrder(font().substrByWidth(getMessage(), room));
+        var label = Language.getInstance().getVisualOrder(font().substrByWidth(label(), room));
         int textWidth = font().width(label);
         int contentWidth = textWidth + (hasIcon ? 18 : 0);
         int x = getX() + (getWidth() - contentWidth) / 2;

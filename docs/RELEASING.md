@@ -94,6 +94,10 @@ workflow's own `GITHUB_TOKEN` (the workflow has `packages: write`), so it needs 
 
 The POMs list no dependencies (consumers have Minecraft and NeoForge already) and there's no Gradle module metadata.
 
+The API is only published when its artifact version (`API_VERSION` plus the Minecraft version) differs from the one at
+the previous release tag. A release that leaves the API alone (like 1.1.0, which only changed the toolkit) publishes
+the mod and keeps pointing API users at the existing `hibiscuslib-api` version.
+
 For Hibiscus Teams' and Hibiscus Quests' workflows to download the packages with their own `GITHUB_TOKEN`, give those
 repositories read access once: the package's page → **Package settings** → **Manage Actions access** → add
 `hibiscus-teams` and `hibiscus-quests` with the Read role. Do it for both packages after the first release.

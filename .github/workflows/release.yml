@@ -124,13 +124,29 @@ jobs:
             "${prerelease[@]}" "${latest[@]}"
 
       # software.hibiscus.hibiscuslib:hibiscuslib and :hibiscuslib-api, with sources (and the API's Javadoc), at
-      # https://maven.pkg.github.com/<this repository>. GitHub Packages won't replace a version that's already there,
-      # so a re-run after this step succeeded skips it (see docs/RELEASING.md).
+      # https://maven.pkg.github.com/<this repository>. GitHub Packages won't replace a version that's already there, so
+      # the API is only published when its version (API_VERSION plus the Minecraft version) differs from the previous
+      # release tag's: a release that doesn't change the API ships the same API version as the last one.
       - name: Publish to GitHub Packages
         env:
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ github.token }}
-        run: ./gradlew publishAllPublicationsToGitHubPackagesRepository -Pgithub_repository="${GITHUB_REPOSITORY}"
+        run: |
+          api_file=src/api/java/software/hibiscus/hibiscuslib/api/HibiscusLibApi.java
+          api_of() { git show "$1:${api_file}" 2>/dev/null | grep -oE 'API_VERSION = "[^"]+"' | head -n1 | cut -d'"' -f2; }
+          mc_of() { git show "$1:gradle.properties" 2>/dev/null | grep -E '^minecraft_version=' | cut -d= -f2 | tr -d '[:space:]'; }
+          current="$(api_of HEAD)+$(mc_of HEAD)"
+          previous_tag="$(git describe --tags --abbrev=0 --match 'v*' "${GITHUB_SHA}^" 2>/dev/null || true)"
+          previous=""
+          if [ -n "${previous_tag}" ]; then previous="$(api_of "${previous_tag}")+$(mc_of "${previous_tag}")"; fi
+          tasks=(publishMavenJavaPublicationToGitHubPackagesRepository)
+          if [ "${current}" = "${previous}" ]; then
+            echo "hibiscuslib-api ${current} was published with ${previous_tag}; publishing the mod only"
+          else
+            echo "Publishing hibiscuslib-api ${current} (previous release: ${previous_tag:-none}, ${previous:-none})"
+            tasks+=(publishApiPublicationToGitHubPackagesRepository)
+          fi
+          ./gradlew "${tasks[@]}" -Pgithub_repository="${GITHUB_REPOSITORY}"
 
       # The mod jar and notes the curseforge job uploads, so it sends exactly what the GitHub Release has (the API
       # jar stays on GitHub only).

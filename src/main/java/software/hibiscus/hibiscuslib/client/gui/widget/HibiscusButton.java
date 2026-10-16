@@ -22,10 +22,23 @@ import software.hibiscus.hibiscuslib.client.gui.HibiscusTheme;
 // disabled), and runs its action on click, Enter or Space.
 public abstract class HibiscusButton extends AbstractButton {
     private final Consumer<HibiscusButton> onPress;
+    private Component label;
 
     protected HibiscusButton(int x, int y, int width, int height, Component message, Consumer<HibiscusButton> onPress) {
         super(x, y, width, height, message);
         this.onPress = onPress;
+        this.label = message;
+    }
+
+    @Override
+    public void setMessage(Component message) {
+        super.setMessage(message);
+        this.label = message;
+    }
+
+    // The label as given, to draw in the theme's colours. (getMessage() is vanilla's, which turns grey while inactive.)
+    protected Component label() {
+        return label;
     }
 
     @SuppressWarnings("unchecked")

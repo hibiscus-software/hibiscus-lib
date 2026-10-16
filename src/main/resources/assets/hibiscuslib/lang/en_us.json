@@ -78,5 +78,12 @@
   "screen.hibiscuslib.gallery.status.pressed": "Pressed",
   "screen.hibiscuslib.gallery.status.confirmed": "Confirmed",
   "screen.hibiscuslib.gallery.status.cancelled": "Cancelled",
-  "screen.hibiscuslib.gallery.status.activated": "Opened %s"
+  "screen.hibiscuslib.gallery.status.activated": "Opened %s",
+  "gui.hibiscuslib.confirm.type": "Type %s to confirm",
+  "screen.hibiscuslib.gallery.popup.typed": "Type-to-confirm dialog",
+  "screen.hibiscuslib.gallery.popup.typed.title": "Disband Team Coral?",
+  "screen.hibiscuslib.gallery.popup.typed.message": "Every member goes back to their own team and the team's settings are lost.",
+  "screen.hibiscuslib.gallery.popup.typed.confirm": "Disband",
+  "screen.hibiscuslib.gallery.section.faces": "Player faces",
+  "screen.hibiscuslib.gallery.faces.hint": "Faces come from the player's skin; the dot marks who's online."
 }

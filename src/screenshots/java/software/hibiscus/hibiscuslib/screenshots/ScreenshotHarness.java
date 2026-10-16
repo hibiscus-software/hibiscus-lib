@@ -171,8 +171,10 @@ public final class ScreenshotHarness {
     }
 
     private static void plan(Minecraft minecraft) {
-        // The smallest GUI space the README promises is 1280x720 at scale 3 (427x240); scale 4 needs 1920x1080.
-        int[][] sizes = {{1280, 720, 1}, {1280, 720, 2}, {1280, 720, 3}, {1920, 1080, 4}};
+        // The smallest GUI space the README promises is 1280x720 at scale 3 (427x240). Scale 4 needs a window at least
+        // 960 high; 1440x960 (360x240) fits on a 1080p monitor without maximising, which a 1920x1080 window would (and a
+        // maximised window ignores later resizes).
+        int[][] sizes = {{1280, 720, 1}, {1280, 720, 2}, {1280, 720, 3}, {1440, 960, 4}};
         for (int[] size : sizes) {
             String tag = size[0] + "x" + size[1] + "_scale" + size[2];
             then(() -> {
@@ -206,6 +208,14 @@ public final class ScreenshotHarness {
                     gallery.showTab(index);
                 }, 10);
                 shot("gallery_tab" + tab + "_" + tag);
+                if (tab == 2) {
+                    // The player faces are below the list: scroll down to them.
+                    then(() -> minecraft.gui.screen().children().stream()
+                            .filter(child -> child instanceof software.hibiscus.hibiscuslib.client.gui.widget.ScrollPanel)
+                            .map(child -> (software.hibiscus.hibiscuslib.client.gui.widget.ScrollPanel) child)
+                            .forEach(panel -> panel.setScrollAmount(panel.maxScrollAmount())), 5);
+                    shot("gallery_tab2_scrolled_" + tag);
+                }
             }
             then(() -> {
                 if (minecraft.gui.screen() instanceof WidgetGalleryScreen gallery) {
@@ -215,6 +225,15 @@ public final class ScreenshotHarness {
                 }
             }, 10);
             shot("gallery_dialog_" + tag);
+            then(() -> {
+                if (minecraft.gui.screen() instanceof WidgetGalleryScreen gallery) {
+                    gallery.topPopup().ifPresent(popup -> popup.cancel());
+                    gallery.openPopup(new ConfirmDialog(Component.literal("Disband Team Coral?"),
+                            Component.literal("Every member goes back to their own team and the team's settings are lost."),
+                            Component.literal("Disband"), Component.translatable("gui.cancel"), yes -> {}).dangerous().requireTyping("Coral"));
+                }
+            }, 10);
+            shot("gallery_typed_dialog_" + tag);
             then(() -> {
                 if (minecraft.gui.screen() instanceof WidgetGalleryScreen gallery) {
                     gallery.topPopup().ifPresent(popup -> popup.cancel());

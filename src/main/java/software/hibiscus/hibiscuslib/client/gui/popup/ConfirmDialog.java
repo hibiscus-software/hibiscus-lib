@@ -21,15 +21,19 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import software.hibiscus.hibiscuslib.client.gui.HibiscusTheme;
 import software.hibiscus.hibiscuslib.client.gui.widget.TextButton;
+import software.hibiscus.hibiscuslib.client.gui.widget.TextInput;
 
 /**
  * A yes/no question over the screen ("Leave the team?", "Reset this quest?"). The callback gets true for the confirm
- * button and false for cancel, Esc or a right click outside. Mark it dangerous to draw the confirm label in the
- * negative colour.
+ * button and false for cancel, Esc or a right click outside. Mark it {@link #dangerous()} to underline the confirm
+ * button in the negative colour, and for actions that can't be undone (disbanding a team, deleting a chapter) add
+ * {@link #requireTyping(String)}: the confirm button stays disabled until the player types the given text.
  */
 public class ConfirmDialog extends Popup {
     private static final int WIDTH = 220;
     private static final int PADDING = 8;
+    // The hint line, the text field and a gap, when typing is required.
+    private static final int TYPING_HEIGHT = 10 + 18 + 6;
 
     private final Component title;
     private final Component message;
@@ -38,7 +42,9 @@ public class ConfirmDialog extends Popup {
     private final BooleanConsumer callback;
     private final List<FormattedCharSequence> lines;
     private boolean dangerous;
+    private @Nullable String requiredText;
     private @Nullable TextButton confirm;
+    private @Nullable TextInput typed;
 
     public ConfirmDialog(Component title, Component message, BooleanConsumer callback) {
         this(title, message, CommonComponents.GUI_YES, CommonComponents.GUI_NO, callback);
@@ -63,15 +69,42 @@ public class ConfirmDialog extends Popup {
         return this;
     }
 
+    // Asks the player to type text (usually the name of what's being deleted) before Confirm works. Exact match,
+    // ignoring spaces at either end. Call before opening the dialog.
+    public ConfirmDialog requireTyping(String text) {
+        if (requiredText == null) {
+            setHeight(getHeight() + TYPING_HEIGHT);
+        }
+        this.requiredText = text.strip();
+        return this;
+    }
+
+    private boolean typedMatches() {
+        return requiredText == null || (typed != null && typed.getValue().strip().equals(requiredText));
+    }
+
     @Override
     protected void init() {
         int buttonWidth = (getWidth() - PADDING * 3) / 2;
         int y = getHeight() - PADDING - 20;
-        confirm = add(new TextButton(buttonWidth, confirmLabel, button -> answer(true)), PADDING, y);
+        confirm = add(new TextButton(buttonWidth, confirmLabel, button -> {
+            if (typedMatches()) {
+                answer(true);
+            }
+        }), PADDING, y);
         if (!dangerous) {
             confirm.accent();
         }
         add(new TextButton(buttonWidth, cancelLabel, button -> answer(false)), PADDING * 2 + buttonWidth, y);
+        if (requiredText != null) {
+            typed = add(new TextInput(getWidth() - PADDING * 2, Component.translatable("gui.hibiscuslib.confirm.type", requiredText)),
+                    PADDING, y - 6 - 18);
+            typed.setMaxLength(Math.max(32, requiredText.length() + 8));
+            typed.placeholder(Component.literal(requiredText));
+            typed.setResponder(text -> confirm.active = typedMatches());
+            confirm.active = false;
+            setFocused(typed);
+        }
     }
 
     private void answer(boolean confirmed) {
@@ -96,6 +129,10 @@ public class ConfirmDialog extends Popup {
             graphics.text(font, line, getX() + PADDING, y, theme.textMuted(), false);
             y += 10;
         }
+        if (requiredText != null && typed != null) {
+            Component hint = Component.translatable("gui.hibiscuslib.confirm.type", Component.literal(requiredText).withColor(theme.text()));
+            graphics.text(font, hint, getX() + PADDING, typed.getY() - 11, theme.textMuted(), false);
+        }
         super.extractWidgetRenderState(graphics, mouseX, mouseY, a);
         if (dangerous && confirm != null) {
             // Draw a red rule under the confirm button, so a dangerous action stands out without relying on colour alone.
@@ -107,6 +144,9 @@ public class ConfirmDialog extends Popup {
     @Override
     protected void updateWidgetNarration(NarrationElementOutput output) {
         output.add(NarratedElementType.TITLE, Component.empty().append(title).append(". ").append(message));
+        if (requiredText != null) {
+            output.add(NarratedElementType.HINT, Component.translatable("gui.hibiscuslib.confirm.type", requiredText));
+        }
         super.updateWidgetNarration(output);
     }
 }

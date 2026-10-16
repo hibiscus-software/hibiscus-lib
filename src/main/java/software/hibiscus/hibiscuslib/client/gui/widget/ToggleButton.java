@@ -51,7 +51,7 @@ public class ToggleButton extends HibiscusButton {
         }
         int switchX = getRight() - SWITCH_WIDTH - 2;
         int textWidth = switchX - getX() - 6;
-        var label = net.minecraft.locale.Language.getInstance().getVisualOrder(font().substrByWidth(getMessage(), textWidth));
+        var label = net.minecraft.locale.Language.getInstance().getVisualOrder(font().substrByWidth(label(), textWidth));
         graphics.text(font(), label, getX() + 3, getY() + (getHeight() - 8) / 2, labelColor(), false);
         theme.draw(graphics, value ? HibiscusTheme.SPRITE_TOGGLE_ON : HibiscusTheme.SPRITE_TOGGLE_OFF,
                 switchX, getY() + (getHeight() - SWITCH_HEIGHT) / 2, SWITCH_WIDTH, SWITCH_HEIGHT);
@@ -59,7 +59,7 @@ public class ToggleButton extends HibiscusButton {
 
     @Override
     protected void updateWidgetNarration(NarrationElementOutput output) {
-        output.add(NarratedElementType.TITLE, Component.translatable("gui.hibiscuslib.toggle.narration", getMessage(),
+        output.add(NarratedElementType.TITLE, Component.translatable("gui.hibiscuslib.toggle.narration", label(),
                 value ? CommonComponents.OPTION_ON : CommonComponents.OPTION_OFF));
     }
 }
