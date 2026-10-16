@@ -24,6 +24,7 @@ import software.hibiscus.hibiscuslib.client.gui.widget.ListWidget;
 import software.hibiscus.hibiscuslib.client.gui.widget.Panel;
 import software.hibiscus.hibiscuslib.client.gui.widget.ScrollPanel;
 import software.hibiscus.hibiscuslib.client.gui.widget.Tabs;
+import software.hibiscus.hibiscuslib.client.gui.widget.TextArea;
 import software.hibiscus.hibiscuslib.client.gui.widget.TextButton;
 import software.hibiscus.hibiscuslib.client.gui.widget.TextInput;
 import software.hibiscus.hibiscuslib.client.gui.widget.TextLayoutWidget;
@@ -41,6 +42,7 @@ public class WidgetGalleryScreen extends BaseScreen {
     private boolean toggleA = true;
     private boolean toggleB;
     private int color = 0xF2557A;
+    private String notes = "";
     private @Nullable String selectedPlayer;
     private Component status = Component.empty();
 
@@ -129,6 +131,12 @@ public class WidgetGalleryScreen extends BaseScreen {
         content.add(new TextInput(Math.min(width, 200), t("input.number")).placeholder(t("input.number.placeholder"))
                 .validator(text -> text.isEmpty() || text.matches("\\d{1,6}")), 0, y);
         y += 26;
+        y = heading(content, width, y, "section.text_area");
+        TextArea area = new TextArea(0, 0, Math.min(width, 200), 48, t("input.notes"), t("input.notes.placeholder"));
+        area.setValue(notes);
+        area.setResponder(text -> notes = text);
+        content.add(area, 0, y);
+        y += 54;
         y = heading(content, width, y, "section.color_picker");
         content.add(new ColorPicker(0, 0, color, rgb -> color = rgb), 0, y);
         y += ColorPicker.HEIGHT + 6;

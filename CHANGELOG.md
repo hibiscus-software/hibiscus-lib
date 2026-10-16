@@ -24,6 +24,11 @@ date. How to cut a release is in [docs/RELEASING.md](docs/RELEASING.md).
 
 ## [Unreleased]
 
+### Added
+
+- **`TextArea`**, a themed text field of several lines (with a placeholder, wrapping, selection, the clipboard and
+  the theme's scrollbar), for quest descriptions and other longer text. It's in the widget gallery under Inputs.
+
 ## [1.3.0] - 2026-10-16
 
 ### Added
