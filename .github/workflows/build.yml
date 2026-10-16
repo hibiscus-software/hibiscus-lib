@@ -36,12 +36,13 @@ jobs:
 
       # The classes just compiled, run on the oldest NeoForge in neo_version_range without recompiling, so a call
       # that newer builds changed shows up as a linkage error. JEI doesn't load on 26.3.0.0-beta, hence no_jei.
-      # The Minecraft workspace is set up afresh (and the configuration cache skipped): otherwise the one patched
-      # for neo_version is reused, and runs against the old NeoForge fail with a ClassNotFoundException.
+      # The Minecraft workspace is set up afresh, without the build or configuration cache: otherwise the one made
+      # for neo_version comes back from the cache (deleting build/neoForm alone isn't enough), and the run fails with
+      # a NoClassDefFoundError for a newer NeoForge interface.
       - name: Run game tests on the oldest NeoForge
         run: |
           rm -rf build/neoForm
-          ./gradlew runGameTestServer -x compileJava -x compileApiJava -Pneo_version=26.3.0.0-beta -Pno_jei --no-configuration-cache
+          ./gradlew runGameTestServer -x compileJava -x compileApiJava -Pneo_version=26.3.0.0-beta -Pno_jei --no-configuration-cache --no-build-cache
 
       # Every build's jars (the mod and the API), downloadable from the run's Summary page for 30 days.
       - name: Upload jars
