@@ -15,6 +15,8 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import software.hibiscus.hibiscuslib.gametest.HibiscusLibGameTests;
+import software.hibiscus.hibiscuslib.team.SoloTeams;
+import software.hibiscus.hibiscuslib.util.PermissionLevels;
 
 // Hibiscus Lib's common entrypoint (both sides). Must match the modId in META-INF/neoforge.mods.toml.
 @Mod(HibiscusLib.MODID)
@@ -23,6 +25,9 @@ public class HibiscusLib {
     public static final Logger LOGGER = LogUtils.getLogger();
 
     public HibiscusLib(IEventBus modEventBus, ModContainer modContainer) {
+        // The solo-team fallback is the Teams API until Hibiscus Teams (or another teams mod) installs its own.
+        SoloTeams.installFallback();
+        PermissionLevels.register();
         HibiscusLibGameTests.register(modEventBus);
     }
 

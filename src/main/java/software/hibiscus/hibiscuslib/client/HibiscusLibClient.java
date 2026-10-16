@@ -19,6 +19,7 @@ import software.hibiscus.hibiscuslib.client.button.ButtonBar;
 import software.hibiscus.hibiscuslib.client.button.ButtonKeys;
 import software.hibiscus.hibiscuslib.client.button.DataDrivenButtons;
 import software.hibiscus.hibiscuslib.client.gui.ThemeLoader;
+import software.hibiscus.hibiscuslib.client.team.ClientSoloTeams;
 import software.hibiscus.hibiscuslib.config.HibiscusLibClientConfig;
 
 // Client-only entrypoint; this class is never loaded on dedicated servers.
@@ -33,6 +34,7 @@ public class HibiscusLibClient {
         ButtonBar.register();
         ButtonKeys.register(modEventBus);
         HibiscusLibClientCommands.register();
+        ClientSoloTeams.installFallback();
     }
 
     private static void addReloadListeners(AddClientReloadListenersEvent event) {

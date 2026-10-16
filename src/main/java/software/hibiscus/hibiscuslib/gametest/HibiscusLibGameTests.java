@@ -18,17 +18,24 @@ import net.minecraft.gametest.framework.TestData;
 import net.minecraft.gametest.framework.TestEnvironmentDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.permissions.PermissionLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Rotation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.event.RegisterGameTestsEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.server.permission.nodes.PermissionNode;
 import software.hibiscus.hibiscuslib.HibiscusLib;
+import software.hibiscus.hibiscuslib.util.PermissionLevels;
 
 // Registers every Hibiscus Lib gametest. All run in one batch on an empty structure; ./gradlew runGameTestServer runs
 // them and exits, failing the build if any required test fails.
 public final class HibiscusLibGameTests {
     private static final DeferredRegister<Consumer<GameTestHelper>> FUNCTIONS = DeferredRegister.create(Registries.TEST_FUNCTION, HibiscusLib.MODID);
+
+    // Permission nodes for UtilGameTests, declared like a mod would (registered when the server starts).
+    static final PermissionNode<Boolean> TEST_NODE_ALL = PermissionLevels.node(HibiscusLib.MODID, "gametest_all", PermissionLevel.ALL);
+    static final PermissionNode<Boolean> TEST_NODE_OPS = PermissionLevels.node(HibiscusLib.MODID, "gametest_ops", PermissionLevel.GAMEMASTERS);
 
     // Every test, by name.
     private static final Map<String, Consumer<GameTestHelper>> TESTS = new LinkedHashMap<>();
@@ -44,6 +51,15 @@ public final class HibiscusLibGameTests {
         TESTS.put("buttons_layout_narrow_grows_taller", ButtonGameTests::layoutNarrowGrowsTaller);
         TESTS.put("buttons_layout_drops_overflow", ButtonGameTests::layoutDropsOverflow);
         TESTS.put("buttons_layout_bottom_left", ButtonGameTests::layoutBottomLeft);
+        TESTS.put("teams_fallback_installed", TeamsGameTests::fallbackInstalled);
+        TESTS.put("teams_solo_team_shape", TeamsGameTests::soloTeamShape);
+        TESTS.put("teams_unknown_team_empty", TeamsGameTests::unknownTeamEmpty);
+        TESTS.put("teams_extra_data_persists", TeamsGameTests::extraDataPersists);
+        TESTS.put("teams_created_event_on_first_join", TeamsGameTests::createdEventOnFirstJoin);
+        TESTS.put("util_snbt_round_trip", UtilGameTests::snbtRoundTrip);
+        TESTS.put("util_rate_limiter", UtilGameTests::rateLimiter);
+        TESTS.put("util_profiles", UtilGameTests::profiles);
+        TESTS.put("util_permissions", UtilGameTests::permissions);
         TESTS.forEach((name, test) -> FUNCTIONS.register(name, () -> test));
     }
 

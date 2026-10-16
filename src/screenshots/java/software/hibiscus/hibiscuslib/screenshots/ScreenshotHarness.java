@@ -120,6 +120,8 @@ public final class ScreenshotHarness {
         }
         if (!planned) {
             planned = true;
+            // The client half of the Teams API fallback: the local player's own solo team.
+            HibiscusLib.LOGGER.info("ClientTeams.myTeam() in world: {}", software.hibiscus.hibiscuslib.api.team.ClientTeams.myTeam());
             plan(minecraft);
         }
         if (wait > 0) {

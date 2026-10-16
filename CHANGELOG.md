@@ -60,3 +60,20 @@ Suggested version: **1.0.0** (first release).
   - `/hibiscuslib widgets` opens a gallery of every widget. It's a debug command: there in a development
     environment, or with `debug.widgetGallery` on in `hibiscuslib-client.toml`.
 
+- **Teams API** (`software.hibiscus.hibiscuslib.api.team`, also published alone as `hibiscuslib-api`), for team mods
+  to provide and other mods to use, with or without a teams mod installed. See [docs/API.md](docs/API.md).
+  - `TeamsApi.get()` returns the installed teams mod's teams, or a fallback where every player is their own team (id =
+    the player's UUID), so per-team data works the same either way.
+  - `Team`, `TeamRank` (`ENEMY` up to `OWNER`), `TeamType`, `TeamManager`, and `ClientTeams` for screens.
+  - Per-team storage for other mods (`Team.extraData`), saved with the team; under the fallback in
+    `data/hibiscuslib/solo_teams.dat`.
+  - Events: `TeamCreatedEvent`, `TeamDeletedEvent`, `PlayerJoinTeamRequestEvent` (cancellable), `PlayerLeftTeamEvent`,
+    `PlayerJoinedTeamEvent` (with the team the player came from), `TeamPropertiesChangedEvent` and
+    `TeamAlliesChangedEvent`.
+- **Helpers** for mods built on Hibiscus Lib:
+  - `HibiscusNetwork`: payload registration for a mod's channel, and sending to a player, a team's online members or
+    everyone.
+  - `SnbtFiles`: SNBT files under `config/`, written atomically with a `.bak` of the previous version.
+  - `PermissionLevels`: permission nodes that default to a vanilla op level, so permission mods can manage them.
+  - `Profiles`: player name ↔ UUID lookups that work for offline players.
+  - `RateLimiter`: per-player limits for client requests.
