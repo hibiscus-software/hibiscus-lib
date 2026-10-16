@@ -25,9 +25,11 @@ through it. Design public pieces for those two consumers.
   `InputConstants.MOUSE_BUTTON_LEFT` (= 1) and `MOUSE_BUTTON_RIGHT` (= 3). When unsure, grep the decompiled sources
   (unzip `build/neoForm/neoFormJoined26.3-1/steps/patchUserDev/outputs.jar`) or Arcforge.
 - NeoForge range: the jar declares every 26.3 build from 26.3.0.0-beta (`neo_version_range`) while compiling against
-  `neo_version`. To check an older build, run the already compiled classes on it:
-  `./gradlew runGameTestServer -x compileJava -x compileApiJava -Pneo_version=26.3.0.0-beta -Pno_jei` (add
-  `runScreenshotClient` for GUI changes). Something that differs between builds is looked up by name, as Encoded
+  `neo_version`. To check an older build, run the already compiled classes on it in a fresh Minecraft workspace:
+  `rm -rf build/neoForm` then `./gradlew runGameTestServer -x compileJava -x compileApiJava
+  -Pneo_version=26.3.0.0-beta -Pno_jei --no-configuration-cache` (add `runScreenshotClient` for GUI changes).
+  Without the fresh workspace the one patched for `neo_version` is reused and the run fails with a
+  ClassNotFoundException. Something that differs between builds is looked up by name, as Encoded
   Logistics does for `ModConfig.Type.LOCAL`.
 - Tests: `./gradlew build runGameTestServer`. Gametests live in `gametest/` and are registered in
   `HibiscusLibGameTests`.
