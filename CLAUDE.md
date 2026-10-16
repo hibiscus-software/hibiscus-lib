@@ -24,6 +24,11 @@ through it. Design public pieces for those two consumers.
   `extractBackground`, `MouseButtonEvent` / `KeyEvent`, `minecraft.gui.setScreen(...)` / `minecraft.gui.screen()`,
   `InputConstants.MOUSE_BUTTON_LEFT` (= 1) and `MOUSE_BUTTON_RIGHT` (= 3). When unsure, grep the decompiled sources
   (unzip `build/neoForm/neoFormJoined26.3-1/steps/patchUserDev/outputs.jar`) or Arcforge.
+- NeoForge range: the jar declares every 26.3 build from 26.3.0.0-beta (`neo_version_range`) while compiling against
+  `neo_version`. To check an older build, run the already compiled classes on it:
+  `./gradlew runGameTestServer -x compileJava -x compileApiJava -Pneo_version=26.3.0.0-beta -Pno_jei` (add
+  `runScreenshotClient` for GUI changes). Something that differs between builds is looked up by name, as Encoded
+  Logistics does for `ModConfig.Type.LOCAL`.
 - Tests: `./gradlew build runGameTestServer`. Gametests live in `gametest/` and are registered in
   `HibiscusLibGameTests`.
 - GUI checks: `./gradlew runScreenshotClient` (source set `src/screenshots`, never in a jar) opens a flat creative

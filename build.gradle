@@ -114,7 +114,10 @@ dependencies {
     // Optional integration: compiled against, never required at runtime. The dev client runs with it.
     // EMI has no 26.3 build to compile against yet, so its bridge goes through reflection (RecipeViewers).
     compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
-    localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
+    // -Pno_jei leaves JEI out of the dev runs, for NeoForge builds older than JEI supports (26.3.0.0-beta).
+    if (!providers.gradleProperty('no_jei').isPresent()) {
+        localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
+    }
 }
 
 tasks.withType(ProcessResources).configureEach {

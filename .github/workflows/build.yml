@@ -34,6 +34,11 @@ jobs:
       - name: Run game tests
         run: ./gradlew runGameTestServer
 
+      # The classes just compiled, run on the oldest NeoForge in neo_version_range without recompiling, so a call
+      # that newer builds changed shows up as a linkage error. JEI doesn't load on 26.3.0.0-beta, hence no_jei.
+      - name: Run game tests on the oldest NeoForge
+        run: ./gradlew runGameTestServer -x compileJava -x compileApiJava -Pneo_version=26.3.0.0-beta -Pno_jei
+
       # Every build's jars (the mod and the API), downloadable from the run's Summary page for 30 days.
       - name: Upload jars
         uses: actions/upload-artifact@v4
